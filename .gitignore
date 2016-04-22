@@ -1,5 +1,5 @@
-# Object file
-*.o
+# Ignore directories
+.idea/
 
-# Ada Library Information
-*.ali
+# Ignore files
+*.pyc
