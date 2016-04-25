@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Login Form</title>
+</head>
+<body>
+    <div id="header-div">
+        <h3>Login to access the dashboard</h3>
+    </div>
+    <div id="login-div">
+        <div id="form-div">
+            <form action="/login" method="post" name="frmLogin">
+            <div id="form-inputs">
+                <span>Username: <input id="username" name="user" type="text"/></span>
+                <span>Password: <input id="password" name="pass" type="password"/></span>
+                <div><input id="submit" name="btnLogin" type="submit" value="Login"/></div>
+            </div>
+            </form>
+        </div>
+        <![CDATA[
+        {% if error %}
+            <div class="error" id="msg">{{ error }}</div>
+        {% endif %}
+        ]]>
+    </div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Data Entry Page</title>
+    <style type="text/css">
+        table, tr, td{
+            border: solid 1px;
+        }
+    </style>
+    <link rel="stylesheet" href="static/jquery-ui.min.css"/>
+
+    <link rel="stylesheet" href="static/jquery-ui.structure.min.css"/>
+
+    <script type="application/javascript" src="static/external/jquery/jquery.js"></script>
+
+    <script type="application/javascript" src="static/jquery-ui.min.js"></script>
+
+    <script type="application/javascript">
+          $(function() {
+              $( "#datepicker" ).datepicker({'minDate': '0'});
+              $( "#datepicker" ).datepicker("option", "dateFormat", "yy-mm-dd");
+          });
+    </script>
+</head>
+<body>
+<div id="display">
+    <span id="students">
+        <table id="tbl_students">
+            <caption>
+                <strong>Students</strong>
+            </caption>
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <![CDATA[
+            {% for row in students %}
+            ]]>
+            <tr>
+                <td>{{ row['first'] }}</td>
+                <td>{{ row['last'] }}</td>
+            </tr>
+            <![CDATA[
+            {% endfor %}
+            ]]>
+            <tr>
+                <td colspan="2">
+                <form name="frmStudent" action="/student/add" method="post">
+                    <span>First Name: <input type="text" name="fname"/></span>
+                    <span>Last Name: <input type="text" name="lname"/></span>
+                    <span><input type="submit" name="btnAdd" value="Add Student"/></span>
+                </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </span>
+
+    <span id="quizzes">
+        <table id="tbl_quizzes">
+            <caption>
+                <strong>Quizzes</strong>
+            </caption>
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Subject</th>
+                <th># of Questions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <![CDATA[
+            {% for row in quizzes %}
+            ]]>
+            <tr>
+                <td>{{ row['date'] }}</td>
+                <td>{{ row['subj'] }}</td>
+                <td>{{ row['numq'] }}</td>
+            </tr>
+            <![CDATA[
+            {% endfor %}
+            ]]>
+            <tr>
+                <td colspan="3">
+                    <form name="frmQuizz" action="/quizz/add" method="post">
+                        <span>Date: <input id="datepicker" type="text" name="date" size="15"/></span>
+                        <span>Subject: <input type="text" name="subj" size="30"/></span>
+                        <span>Questions: <input type="text" name="numq" size="10"/></span>
+                        <span><input type="submit" name="btnAdd" value="Add Quizz"/></span>
+                </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </span>
+</div>
+</body>
+</html>
