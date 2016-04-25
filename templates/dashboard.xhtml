@@ -27,7 +27,8 @@
 </head>
 <body>
 <div id="display">
-    <span id="students">
+    <div id="students">
+        <form name="frmStudent" action="/student/add" method="post">
         <table id="tbl_students">
             <caption>
                 <strong>Students</strong>
@@ -51,18 +52,18 @@
             ]]>
             <tr>
                 <td colspan="2">
-                <form name="frmStudent" action="/student/add" method="post">
-                    <span>First Name: <input type="text" name="fname"/></span>
-                    <span>Last Name: <input type="text" name="lname"/></span>
+                    <span>First Name: <input type="text" name="first"/></span>
+                    <span>Last Name: <input type="text" name="last"/></span>
                     <span><input type="submit" name="btnAdd" value="Add Student"/></span>
-                </form>
                 </td>
             </tr>
             </tbody>
         </table>
-    </span>
+        </form>
+    </div>
 
-    <span id="quizzes">
+    <div id="quizzes">
+        <form name="frmQuizz" action="/quizz/add" method="post">
         <table id="tbl_quizzes">
             <caption>
                 <strong>Quizzes</strong>
@@ -88,17 +89,16 @@
             ]]>
             <tr>
                 <td colspan="3">
-                    <form name="frmQuizz" action="/quizz/add" method="post">
-                        <span>Date: <input id="datepicker" type="text" name="date" size="15"/></span>
-                        <span>Subject: <input type="text" name="subj" size="30"/></span>
-                        <span>Questions: <input type="text" name="numq" size="10"/></span>
-                        <span><input type="submit" name="btnAdd" value="Add Quizz"/></span>
-                </form>
+                    <span>Date: <input id="datepicker" type="text" name="date" size="15"/></span>
+                    <span>Subject: <input type="text" name="subj" size="30"/></span>
+                    <span>Questions: <input type="text" name="numq" size="10"/></span>
+                    <span><input type="submit" name="btnAdd" value="Add Quizz"/></span>
                 </td>
             </tr>
             </tbody>
         </table>
-    </span>
+        </form>
+    </div>
 </div>
 </body>
 </html>

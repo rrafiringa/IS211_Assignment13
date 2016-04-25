@@ -48,10 +48,8 @@ def dashboard():
     g.db.row_factory = sqlite3.Row
     squery = "SELECT * FROM students"
     students = g.db.execute(squery)
-
     qquery = "SELECT * FROM quizzes"
     quizzes = g.db.execute(qquery)
-
     return render_template('dashboard.xhtml', students=students, quizzes=quizzes)
 
 
@@ -59,14 +57,26 @@ def dashboard():
 def add_student():
     if request.method == 'POST':
         cols = ('first', 'last')
-        rows = (request.form[cols[0]], request.form[cols[1]])
+        row = (
+            request.form['first'],
+            request.form['last'])
+        g.db = dbconnect()
+        insert('students', cols, row)
+        return redirect(url_for('dashboard'))
 
-        redirect(url_for('dashboard'))
 
-
-@app.route('/quizz/add', methods=['POST'])
+@app.route('/quizz/add', methods=['GET', 'POST'])
 def add_quizz():
-    redirect(url_for('dashboard'))
+    if request.method == 'POST':
+        cols = ('date', 'subj', 'numq')
+        values = (
+            request.form['date'],
+            request.form['subj'],
+            request.form['numq']
+        )
+        g.db = dbconnect()
+        insert('quizzes', cols, values)
+        return redirect(url_for('dashboard'))
 
 
 @app.route('/results/add')
@@ -79,8 +89,23 @@ def get_student_results(id):
     # Results or msg 'No result'
     pass
 
+
 def dbconnect():
     return sqlite3.connect(app.database)
+
+
+def insert(table, field=(), values=()):
+    cur = g.db.cursor()
+    query = 'INSERT INTO {} ({}) VALUES ({})'.format(
+        table,
+        ', '.join(fields),
+        ', '.join(['?'] * len(values))
+    )
+    cur.execute(query, values)
+    g.db.commit()
+    rid = cur.lastrowid
+    cur.close()
+    return rid
 
 
 if __name__ == '__main__':
