@@ -5,13 +5,14 @@
 IS211 Assignment 13: Flask web dev part II
 """
 
-from flask import Flask, render_template, request, redirect, url_for, g
 import sqlite3
 
+from flask import Flask, render_template, request, redirect, url_for, g
 
 app = Flask(__name__)
 
 app.database = 'hw13.db'
+
 
 @app.route('/')
 def start():
@@ -35,7 +36,7 @@ def login():
         if user == 'admin' and pwd == 'password':
             return redirect('/dashboard')
         else:
-            error = '<strong>Error: </strong>Wrong credentials, please try again.'
+            error = 'Wrong credentials, please try again.'
     return render_template('login.xhtml', error=error)
 
 
@@ -79,29 +80,87 @@ def add_quizz():
         return redirect(url_for('dashboard'))
 
 
-@app.route('/results/add')
+@app.route('/results/add', methods=['GET', 'POST'])
 def add_results():
-    pass
+    if request.method == 'POST':
+        cols = ('sid', 'qid', 'score')
+        data = (request.form['sid'],
+                request.form['qid'],
+                request.form['score'])
+        insert('results', cols, data)
+    else:
+        squery = "SELECT sid, first || ' ' || last AS student " \
+                 "FROM students"
+        qquery = "SELECT qid, date || ' - ' || subj AS quizz " \
+                 "FROM quizzes"
+        rquery = "SELECT s.first || ' ' || s.last as student, " \
+                 "q. subj, q.date, r.score FROM results AS r " \
+                 "LEFT JOIN students AS s ON r.sid = s.sid " \
+                 "LEFT JOIN quizzes AS q ON r.qid = q.qid " \
+                 "ORDER BY q.date DESC"
+        g.db = dbconnect()
+        g.db.row_factory = sqlite3.Row
+        students = g.db.execute(squery).fetchall()
+        quizzes = g.db.execute(qquery).fetchall()
+        display = g.db.execute(rquery).fetchall()
+    return render_template('score.xhtml',
+                           students=students,
+                           quizzes=quizzes, display=display)
 
 
-@app.route('/student/<id>')
-def get_student_results(id):
+@app.route('/student/<int:sid>')
+def get_results(sid):
     # Results or msg 'No result'
-    pass
+    error = None
+    query = 'SELECT * FROM results AS r LEFT JOIN quizzes AS q ON r.qid = q.qid WHERE r.sid = {}'.format(sid)
+    g.db = dbconnect()
+    g.db.row_factory = sqlite3.Row
+    rows = g.db.execute(query).fetchall()
+    if len(rows) <= 0:
+        error = 'No Result'
+    return render_template('results.xhtml', rows=rows, error=error)
 
 
 def dbconnect():
+    """
+    Connect to sqlite database
+    :return: (Object) sqlite3 database connection object
+    """
     return sqlite3.connect(app.database)
 
 
-def insert(table, field=(), values=()):
+def insert(table, fields=(), values=()):
+    """
+    Insert record into table
+    :param table: (String) Table name
+    :param fields: (Tuple) List of fields
+    :param values: (Tuple) List of values
+    :return: (Int) Affected rows
+    """
     cur = g.db.cursor()
     query = 'INSERT INTO {} ({}) VALUES ({})'.format(
-        table,
-        ', '.join(fields),
-        ', '.join(['?'] * len(values))
-    )
+        table, ', '.join(fields),
+        ', '.join(['?'] * len(values)))
     cur.execute(query, values)
+    g.db.commit()
+    rid = cur.lastrowid
+    cur.close()
+    return rid
+
+
+def delete(table, colname=None, colvalue=None):
+    """
+    Deletes item from table
+    :param table: (String) - Table name
+    :param colname: (String) - Optional column name
+    :param colvalue: (Mixed) - Value
+    :return:
+    """
+    cur = g.db.cursor()
+    query = 'DELETE FROM {}'.format(table)
+    if colname is not None and colvalue is not None:
+        query += ' WHERE {} = {}'.format(colname, colvalue)
+    cur.execute(query)
     g.db.commit()
     rid = cur.lastrowid
     cur.close()
@@ -110,4 +169,3 @@ def insert(table, field=(), values=()):
 
 if __name__ == '__main__':
     app.run(debug=True)
-

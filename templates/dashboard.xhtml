@@ -4,12 +4,10 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>Data Entry Page</title>
-    <style type="text/css">
-        table, tr, td{
-            border: solid 1px;
-        }
-    </style>
+    <title>Quizz Manager</title>
+
+    <link rel="stylesheet" href="/static/page.css"/>
+
     <link rel="stylesheet" href="static/jquery-ui.min.css"/>
 
     <link rel="stylesheet" href="static/jquery-ui.structure.min.css"/>
@@ -20,14 +18,18 @@
 
     <script type="application/javascript">
           $(function() {
-              $( "#datepicker" ).datepicker({'minDate': '0'});
+              $( "#datepicker" ).datepicker({'minDate': '-90', 'maxDate': '0'});
               $( "#datepicker" ).datepicker("option", "dateFormat", "yy-mm-dd");
           });
     </script>
 </head>
 <body>
+<h3>Class Management:</h3>
+<div>
+    <a class="menu" href="/results/add">Add Quizz Results</a>
+</div>
 <div id="display">
-    <div id="students">
+    <div id="students" class="section">
         <form name="frmStudent" action="/student/add" method="post">
         <table id="tbl_students">
             <caption>
@@ -37,6 +39,7 @@
             <tr>
                 <th>First Name</th>
                 <th>Last Name</th>
+                <th>Results</th>
             </tr>
             </thead>
             <tbody>
@@ -46,15 +49,16 @@
             <tr>
                 <td>{{ row['first'] }}</td>
                 <td>{{ row['last'] }}</td>
+                <td><a href="/student/{{ row['sid'] }}">View</a></td>
             </tr>
             <![CDATA[
             {% endfor %}
             ]]>
-            <tr>
-                <td colspan="2">
-                    <span>First Name: <input type="text" name="first"/></span>
-                    <span>Last Name: <input type="text" name="last"/></span>
-                    <span><input type="submit" name="btnAdd" value="Add Student"/></span>
+            <tr class="bottom">
+                <td colspan="3">
+                    <span>First Name: <input type="text" name="first" size="10"/></span>
+                    <span>Last Name: <input type="text" name="last" size="10"/></span>
+                    <div class="submit"><input type="submit" name="btnAdd" value="Add Student"/></div>
                 </td>
             </tr>
             </tbody>
@@ -62,7 +66,7 @@
         </form>
     </div>
 
-    <div id="quizzes">
+    <div id="quizzes" class="section">
         <form name="frmQuizz" action="/quizz/add" method="post">
         <table id="tbl_quizzes">
             <caption>
@@ -70,6 +74,7 @@
             </caption>
             <thead>
             <tr>
+                <th>Quizz ID</th>
                 <th>Date</th>
                 <th>Subject</th>
                 <th># of Questions</th>
@@ -80,6 +85,11 @@
             {% for row in quizzes %}
             ]]>
             <tr>
+
+                <td>
+                    <input type="hidden" name="qid" value="{{ row['qid'] }}"/>
+                    {{ row['qid'] }}
+                </td>
                 <td>{{ row['date'] }}</td>
                 <td>{{ row['subj'] }}</td>
                 <td>{{ row['numq'] }}</td>
@@ -87,12 +97,12 @@
             <![CDATA[
             {% endfor %}
             ]]>
-            <tr>
-                <td colspan="3">
-                    <span>Date: <input id="datepicker" type="text" name="date" size="15"/></span>
-                    <span>Subject: <input type="text" name="subj" size="30"/></span>
+            <tr class="bottom">
+                <td colspan="4">
+                    <span>Date: <input id="datepicker" type="text" name="date" size="10"/></span>
+                    <span>Subject: <input type="text" name="subj" size="10"/></span>
                     <span>Questions: <input type="text" name="numq" size="10"/></span>
-                    <span><input type="submit" name="btnAdd" value="Add Quizz"/></span>
+                    <div class="submit"><input type="submit" name="btnAdd" value="Add Quizz"/></div>
                 </td>
             </tr>
             </tbody>

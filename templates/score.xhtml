@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Add Quizz Results</title>
+    <link rel="stylesheet" href="/static/page.css"/>
+</head>
+<body>
+<h3>Add Quizz Results:</h3>
+<div id="data-entry">
+    <form name="frmQResults" action="" method="post">
+        <table>
+    <caption></caption>
+    <thead>
+    <tr>
+        <th>Student</th>
+        <th>Quizz</th>
+        <th>Date Taken</th>
+        <th>Score</th>
+        <th><a class="menu" href="/dashboard">Return to Dashboard</a></th>
+    </tr>
+    </thead>
+    <tbody>
+    <![CDATA[
+    {% for row in display %}
+    ]]>
+    <tr>
+        <td>{{ row['student'] }}</td>
+        <td>{{ row['subj'] }}</td>
+        <td>{{ row['date'] }}</td>
+        <td>{{ row['score'] }}</td>
+        <td></td>
+    </tr>
+    <![CDATA[
+    {% endfor %}
+    ]]>
+    <tr>
+        <td>
+            <select name="sid">
+                <![CDATA[ {% for stud in students %} ]]>
+                <option value="{{ stud['sid' }}">{{ stud['name'] }}</option>
+                <![CDATA[ {% endfor %} ]]>
+            </select>
+        </td>
+        <td>
+            <select name="qid">
+                <![CDATA[ {% for quizz in quizzes %} ]]>
+                <option value="{{ quizz['qid'] }}">{{ quizz['subj'] }}</option>
+                <![CDATA[ {% endfor %} ]]>
+            </select>
+        </td>
+        <td>
+            <input type="text" name="score" size="10"/>
+        </td>
+        <td>
+            <span><input type="submit" name="btnAdd" value="Add Score"/></span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+    </form>
+</div>
+</body>
+</html>

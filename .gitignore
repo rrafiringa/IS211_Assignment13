@@ -1,5 +1,7 @@
 # Ignore directories
 .idea/
-
+tests/
 # Ignore files
+tests.*
+test.*
 *.pyc

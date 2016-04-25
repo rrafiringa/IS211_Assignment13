@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Student Quizz Results</title>
+    <link rel="stylesheet" href="/static/page.css"/>
+</head>
+
+    <div id="container">
+        <table>
+            <caption><strong>Quizz Scores</strong></caption>
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Subject</th>
+                <th>Score</th>
+            </tr>
+            </thead>
+            <tbody>
+            <![CDATA[
+            {% for row in rows %}
+            ]]>
+            <tr>
+                <td>{{ row['date'] }}</td>
+                <td>{{ row['subj'] }}</td>
+                <td>{{ row['score'] }}%</td>
+            </tr>
+            <![CDATA[
+            {% endfor %}
+            ]]>
+            </tbody>
+        </table>
+    </div>
+
+    <![CDATA[
+    {% if error %}
+    ]>
+    <div class="error" id="msg">{{ error }}</div>
+    <![CDATA
+    {% endif %}
+    ]>
+
+<body>
+
+</body>
+</html>

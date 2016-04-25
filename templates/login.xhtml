@@ -5,26 +5,32 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <title>Login Form</title>
+
+    <link rel="stylesheet" href="/static/page.css"/>
 </head>
 <body>
-    <div id="header-div">
-        <h3>Login to access the dashboard</h3>
-    </div>
-    <div id="login-div">
-        <div id="form-div">
-            <form action="/login" method="post" name="frmLogin">
-            <div id="form-inputs">
-                <span>Username: <input id="username" name="user" type="text"/></span>
-                <span>Password: <input id="password" name="pass" type="password"/></span>
-                <div><input id="submit" name="btnLogin" type="submit" value="Login"/></div>
-            </div>
-            </form>
+<div id="header-div">
+    <h3>Login to access the dashboard</h3>
+</div>
+    <form action="/login" method="post" name="frmLogin">
+        <div class="input-div">
+            <label for="username">Username: </label>
+            <input id="username" name="user" type="text" size="8"/>
+            <label for="password">Password:</label>
+            <input id="password" name="pass" type="password" size="8"/>
         </div>
-        <![CDATA[
+        <div class="section">
+            <input id="submit" name="btnLogin" type="submit" value="Login"/>
+        </div>
+    </form>
+
+    <![CDATA[
         {% if error %}
-            <div class="error" id="msg">{{ error }}</div>
+        ]]>
+    <div style="color: red; padding-top: 10px;"><strong>Error:</strong>{{ error }}</div>
+    <![CDATA[
         {% endif %}
         ]]>
-    </div>
+</div>
 </body>
 </html>
