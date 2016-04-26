@@ -56,6 +56,10 @@ def dashboard():
 
 @app.route('/student/add', methods=['POST'])
 def add_student():
+    """
+    Adds a student
+    :return: Redirect
+    """
     if request.method == 'POST':
         cols = ('first', 'last')
         row = (
@@ -66,8 +70,12 @@ def add_student():
         return redirect(url_for('dashboard'))
 
 
-@app.route('/quizz/add', methods=['GET', 'POST'])
-def add_quizz():
+@app.route('/quiz/add', methods=['GET', 'POST'])
+def add_quiz():
+    """
+    Adds a quiz
+    :return: Redirect
+    """
     if request.method == 'POST':
         cols = ('date', 'subj', 'numq')
         values = (
@@ -82,6 +90,10 @@ def add_quizz():
 
 @app.route('/results/add', methods=['GET', 'POST'])
 def add_results():
+    """
+    Adds and displays quizz results
+    :return: Render template
+    """
     queries = {'s': "SELECT sid, first || ' ' || last AS student "
                     "FROM students",
                'q': "SELECT qid, date || ' - ' || subj AS quiz "
@@ -119,8 +131,37 @@ def add_results():
                            display=results['d'])
 
 
+@app.route('/student/delete/<int:sid>')
+def del_student(sid):
+    """
+    Delete a student
+    :param sid: (Int) Student identifier
+    :return: Redirect
+    """
+    g.db = dbconnect()
+    msg = delete('students', 'sid', sid)
+    return redirect(url_for('dashboard'), message=msg)
+
+
+@app.route('/quiz/delete/<int:qid>')
+def del_quiz(qid):
+    """
+    Delete a quiz
+    :param qid: (Int) Quiz identifier
+    :return: Redirect
+    """
+    g.db = dbconnect()
+    msg = delete('quizzes', 'qid', qid)
+    return redirect(url_for('dashboard'), message=msg)
+
+
 @app.route('/results/delete/<int:rid>')
 def del_result(rid):
+    """
+    Delete quiz result and display remaining
+    :param rid: (Int) Quiz result identifier
+    :return: Redirect
+    """
     g.db = dbconnect()
     msg = delete('results', 'rid', rid)
     return redirect(url_for('add_results', message=msg))
@@ -128,6 +169,11 @@ def del_result(rid):
 
 @app.route('/student/<int:sid>')
 def get_results(sid):
+    """
+    Show student's scores
+    :param sid: (Int) Student identifier
+    :return: Render template
+    """
     # Results or msg 'No result'
     error = None
     query = 'SELECT * FROM results AS r LEFT JOIN quizzes AS q ON r.qid = q.qid WHERE r.sid = {}'.format(sid)
@@ -185,4 +231,8 @@ def delete(table, colname=None, colvalue=None):
 
 
 if __name__ == '__main__':
+    """
+    Run Flask app
+    """
+
     app.run(debug=True)
