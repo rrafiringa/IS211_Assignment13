@@ -22,8 +22,8 @@ DROP TABLE IF EXISTS "results";
 CREATE TABLE "results"
 (
     "rid" INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL UNIQUE,
-    "sid" INTEGER REFERENCES students("sid") ON DELETE SET NULL,
-    "qid" INTEGER REFERENCES quizzes("qid") ON DELETE SET NULL,
+    "sid" INTEGER REFERENCES students("sid") ON DELETE CASCADE,
+    "qid" INTEGER REFERENCES quizzes("qid") ON DELETE CASCADE,
     "score" FLOAT
 );
 

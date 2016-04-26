@@ -99,10 +99,10 @@ def add_results():
                'q': "SELECT qid, date || ' - ' || subj AS quiz "
                     "FROM quizzes",
                'd': "SELECT s.first || ' ' || s.last as student, "
-                    "q. subj, q.date, r.score, r.rid FROM results AS r "
+                    "q.subj, q.date, r.score, r.rid FROM results AS r "
                     "LEFT JOIN students AS s ON r.sid = s.sid "
                     "LEFT JOIN quizzes AS q ON r.qid = q.qid "
-                    "ORDER BY q.date DESC"}
+                    "ORDER BY q.subj DESC"}
 
     results = {'s': None,
                'q': None,
@@ -139,8 +139,8 @@ def del_student(sid):
     :return: Redirect
     """
     g.db = dbconnect()
-    msg = delete('students', 'sid', sid)
-    return redirect(url_for('dashboard'), message=msg)
+    delete('students', 'sid', sid)
+    return redirect(url_for('dashboard'))
 
 
 @app.route('/quiz/delete/<int:qid>')
@@ -151,8 +151,8 @@ def del_quiz(qid):
     :return: Redirect
     """
     g.db = dbconnect()
-    msg = delete('quizzes', 'qid', qid)
-    return redirect(url_for('dashboard'), message=msg)
+    delete('quizzes', 'qid', qid)
+    return redirect(url_for('dashboard'))
 
 
 @app.route('/results/delete/<int:rid>')
