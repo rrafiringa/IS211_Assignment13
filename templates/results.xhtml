@@ -7,7 +7,7 @@
     <title>Student Quizz Results</title>
     <link rel="stylesheet" href="/static/page.css"/>
 </head>
-
+<body>
     <div id="container">
         <table>
             <caption><strong>Quizz Scores</strong></caption>
@@ -30,19 +30,20 @@
             <![CDATA[
             {% endfor %}
             ]]>
+            <tr>
+                <td><a class="menu" href="/dashboard">Return to Dashboard</a> </td>
+            </tr>
             </tbody>
         </table>
     </div>
 
     <![CDATA[
     {% if error %}
-    ]>
+    ]]>
     <div class="error" id="msg">{{ error }}</div>
-    <![CDATA
+    <![CDATA[
     {% endif %}
-    ]>
-
-<body>
+    ]]>
 
 </body>
 </html>

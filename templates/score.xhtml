@@ -10,7 +10,7 @@
 <body>
 <h3>Add Quizz Results:</h3>
 <div id="data-entry">
-    <form name="frmQResults" action="" method="post">
+    <form name="frmQResults" action="/results/add" method="post">
         <table>
     <caption></caption>
     <thead>
@@ -31,7 +31,7 @@
         <td>{{ row['subj'] }}</td>
         <td>{{ row['date'] }}</td>
         <td>{{ row['score'] }}</td>
-        <td></td>
+        <td><a href="/results/delete/{{ row['rid'] }}">Delete Entry</a></td>
     </tr>
     <![CDATA[
     {% endfor %}
@@ -39,20 +39,28 @@
     <tr>
         <td>
             <select name="sid">
-                <![CDATA[ {% for stud in students %} ]]>
-                <option value="{{ stud['sid' }}">{{ stud['name'] }}</option>
-                <![CDATA[ {% endfor %} ]]>
+                <option value="sdefault" selected="selected">
+                    Pick a student
+                </option>
+                {% for stud in students %}
+                <option value="{{ stud['sid'] }}">{{ stud['student'] }}</option>
+                {% endfor %}
             </select>
         </td>
         <td>
             <select name="qid">
-                <![CDATA[ {% for quizz in quizzes %} ]]>
-                <option value="{{ quizz['qid'] }}">{{ quizz['subj'] }}</option>
-                <![CDATA[ {% endfor %} ]]>
+                <option value="qdefault" selected="selected">
+                    Pick a quizz
+                </option>
+                {% for quiz in quizzes %}
+                <option value="{{ quiz['qid'] }}">{{ quiz['quiz'] }}</option>
+                {% endfor %}
             </select>
         </td>
+        <td>&nbsp;</td>
         <td>
-            <input type="text" name="score" size="10"/>
+            <label for="score">Score: </label>
+            <input id="score" type="text" name="score" size="5"/>
         </td>
         <td>
             <span><input type="submit" name="btnAdd" value="Add Score"/></span>
@@ -62,5 +70,8 @@
 </table>
     </form>
 </div>
+<![CDATA[ {% if message %} ]]>
+<div><strong>Delete SQL: </strong> {{ message }} </div>
+<![CDATA[ {% endif %} ]]>
 </body>
 </html>

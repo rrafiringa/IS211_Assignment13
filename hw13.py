@@ -82,30 +82,48 @@ def add_quizz():
 
 @app.route('/results/add', methods=['GET', 'POST'])
 def add_results():
+    queries = {'s': "SELECT sid, first || ' ' || last AS student "
+                    "FROM students",
+               'q': "SELECT qid, date || ' - ' || subj AS quiz "
+                    "FROM quizzes",
+               'd': "SELECT s.first || ' ' || s.last as student, "
+                    "q. subj, q.date, r.score, r.rid FROM results AS r "
+                    "LEFT JOIN students AS s ON r.sid = s.sid "
+                    "LEFT JOIN quizzes AS q ON r.qid = q.qid "
+                    "ORDER BY q.date DESC"}
+
+    results = {'s': None,
+               'q': None,
+               'd': None}
+
     if request.method == 'POST':
         cols = ('sid', 'qid', 'score')
-        data = (request.form['sid'],
-                request.form['qid'],
-                request.form['score'])
-        insert('results', cols, data)
-    else:
-        squery = "SELECT sid, first || ' ' || last AS student " \
-                 "FROM students"
-        qquery = "SELECT qid, date || ' - ' || subj AS quizz " \
-                 "FROM quizzes"
-        rquery = "SELECT s.first || ' ' || s.last as student, " \
-                 "q. subj, q.date, r.score FROM results AS r " \
-                 "LEFT JOIN students AS s ON r.sid = s.sid " \
-                 "LEFT JOIN quizzes AS q ON r.qid = q.qid " \
-                 "ORDER BY q.date DESC"
+        row = (request.form['sid'],
+               request.form['qid'],
+               request.form['score'])
+        g.db = dbconnect()
+        insert('results', cols, row)
+
+    for (idx, query) in queries.items():
         g.db = dbconnect()
         g.db.row_factory = sqlite3.Row
-        students = g.db.execute(squery).fetchall()
-        quizzes = g.db.execute(qquery).fetchall()
-        display = g.db.execute(rquery).fetchall()
+        cur = g.db.cursor()
+        res = cur.execute(query)
+        rows = res.fetchall()
+        results[idx] = rows
+        cur.close()
+
     return render_template('score.xhtml',
-                           students=students,
-                           quizzes=quizzes, display=display)
+                           students=results['s'],
+                           quizzes=results['q'],
+                           display=results['d'])
+
+
+@app.route('/results/delete/<int:rid>')
+def del_result(rid):
+    g.db = dbconnect()
+    msg = delete('results', 'rid', rid)
+    return redirect(url_for('add_results', message=msg))
 
 
 @app.route('/student/<int:sid>')
@@ -154,17 +172,16 @@ def delete(table, colname=None, colvalue=None):
     :param table: (String) - Table name
     :param colname: (String) - Optional column name
     :param colvalue: (Mixed) - Value
-    :return:
     """
     cur = g.db.cursor()
-    query = 'DELETE FROM {}'.format(table)
+    cond = None
     if colname is not None and colvalue is not None:
-        query += ' WHERE {} = {}'.format(colname, colvalue)
+        cond = ' WHERE {} = {}'.format(colname, colvalue)
+    query = 'DELETE FROM {}'.format(table) + cond
     cur.execute(query)
     g.db.commit()
-    rid = cur.lastrowid
     cur.close()
-    return rid
+    return query
 
 
 if __name__ == '__main__':
